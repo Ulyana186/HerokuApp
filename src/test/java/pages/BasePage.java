@@ -15,6 +15,13 @@ public abstract class BasePage {
     }
 
     protected void openPath(String path) {
-        driver.get(BASE_URL + path);
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            driver.get(BASE_URL + path);
+            String title = driver.getTitle();
+            if (title == null || !title.contains("Application Error")) {
+                return;
+            }
+        }
+        throw new IllegalStateException("Сайт недоступен (Application Error): " + BASE_URL + path);
     }
 }
